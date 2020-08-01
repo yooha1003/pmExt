@@ -23,12 +23,11 @@
 ### &nbsp;&nbsp;&nbsp;_Before using this script_
 ##### &nbsp;&nbsp;&nbsp;You should input your own _'ChromeDriver'_ path in the following line of pmExt.py
 &nbsp;&nbsp;&nbsp;
-<br>
 &nbsp;&nbsp;&nbsp;&nbsp; For Windows,
 ```pathx = "your/chromeDriver/path/chromedriver.exe"```
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp; For MacOS,
-```pathx = "your/chromeDriver/path/chromedriver"```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For MacOS,
+&nbsp;&nbsp;&nbsp;```pathx = "your/chromeDriver/path/chromedriver"```
 
 
 
