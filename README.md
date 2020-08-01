@@ -53,6 +53,9 @@ python pmExt.py --help
 
 ## Outputs
 * <font size=4>_Summary of Articles (.txt)_</font>
+```
+(1) Title (2) Citation number (3) DOI (4) Abstract
+```
 ![](assets/README-c82bc7db.png)
 
 * <font size=4>_Article figures_</font>
