@@ -8,7 +8,6 @@
 + The script is very simple to use
 + Outputs are "_Summary of Articles_" and "_Article Figures_"
 + The script supports <b>_python3_</b> and <b>_Chrome_</b>
-+ <font color=yellow>The script searches images from <b> _all scrolled pages_ </b></font>
 + _Progressbar_ is supporting in this version
 
 ## Install requirements
