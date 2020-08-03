@@ -61,7 +61,7 @@ python pmExt.py --help
 ```
 ![](assets/README-516f4350.png)
 
-* <font size=4>_Abstract Summary_ (.txt)_</font>
+* <font size=4>_Abstract Summary (.txt)_</font>
 ![](assets/README-890c343f.png)
 
 * <font size=4>_Article figures_</font>
