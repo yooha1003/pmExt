@@ -71,8 +71,8 @@ python pmExt.py --help
 ## Version history
 + Version 0.22: new version of output files (2020.08.04)
 + Version 0.21: bug fixed for duplicated articles over limits (2020.08.03)
-+ Version 0.2 : Added automatic summary of abstracts (2020.08.03)
-+ Version 0.1 : The script release (2020.08.01)
++ Version 0.20 : Added automatic summary of abstracts (2020.08.03)
++ Version 0.10 : The script release (2020.08.01)
 
 ## _Contact for Feedback and Bug Reports_
 _Uksu, Choi (qtwing@naver.com)_
