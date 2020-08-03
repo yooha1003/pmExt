@@ -19,6 +19,10 @@ from urllib.parse import quote
 from selenium.webdriver.common.action_chains import ActionChains
 from PIL import Image
 import textwrap
+import logging
+import pytextrank
+import spacy
+##
 
 class pmExt:
     def __init__(self):
@@ -30,6 +34,8 @@ class pmExt:
         title_list = []
         doi_list = []
         abstract_list = []
+        abstract_summary_list = []
+        abstract_keyword_list = []
         citation_list = []
         figure_list = []
         # scrolling google browser
@@ -84,16 +90,40 @@ class pmExt:
                 citation_list.append(citation_list_tmp)
 
             # doi_list
-            d_path = '//*[@id="full-view-identifiers"]/li[2]/span/a'
-            doi_link = browser.find_element_by_xpath(d_path)
-            doi_list_tmp = doi_link.get_attribute('href')
-            doi_list.append(doi_list_tmp)
+            try:
+                d_path = '//*[@id="full-view-identifiers"]/li[2]/span/a'
+                doi_link = browser.find_element_by_xpath(d_path)
+                doi_list_tmp = doi_link.get_attribute('href')
+                doi_list.append(doi_list_tmp)
+            except:
+                doi_list_tmp = "No DOI!!"
+                doi_list.append(doi_list_tmp)
 
-            # abstract_list
+            ## abstract_list
             a_path = '//*[@id="enc-abstract"]/p'
             abstract_link = browser.find_element_by_xpath(a_path)
             abstract_list_tmp = abstract_link.text
             abstract_list.append(abstract_list_tmp)
+
+            # abstract_summary
+            # load a spaCy model and set the environment
+            nlp = spacy.load("en_core_web_sm")
+            # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            # logger = logging.getLogger("PyTR")
+            tr = pytextrank.TextRank(logger=None)
+            nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
+            doc = nlp(abstract_list_tmp)
+            # temporary abstract_summary_list
+            abstract_summary_list_tmp = [];
+            for ab_summary in doc._.textrank.summary(limit_phrases=1, limit_sentences=2):
+                abstract_summary_list_tmp.append(ab_summary)
+            abstract_summary_list.append(str(abstract_summary_list_tmp))
+            # temporary abstract_summary_list
+            abstract_keyword_list_tmp = [];
+            for phrase in doc._.phrases[:5]: ## top 5 keywords
+                abstract_keyword_list_tmp.append(phrase)
+            abstract_keyword_list.append(str(abstract_keyword_list_tmp))
+
 
             # figure_list
             j = 1
@@ -117,7 +147,7 @@ class pmExt:
             print(e)
         ## main run
         i = 0
-        while i < itemN:
+        while i < itemN - 1:
             # title_list
             t_path = '//*[@id="full-view-heading"]/h1'
             title_link = browser.find_element_by_xpath(t_path)
@@ -136,16 +166,38 @@ class pmExt:
                 citation_list.append(citation_list_tmp)
 
             # doi_list
-            d_path = '//*[@id="full-view-identifiers"]/li[2]/span/a'
-            doi_link = browser.find_element_by_xpath(d_path)
-            doi_list_tmp = doi_link.get_attribute('href')
-            doi_list.append(doi_list_tmp)
+            try:
+                d_path = '//*[@id="full-view-identifiers"]/li[2]/span/a'
+                doi_link = browser.find_element_by_xpath(d_path)
+                doi_list_tmp = doi_link.get_attribute('href')
+                doi_list.append(doi_list_tmp)
+            except:
+                doi_list_tmp = "No DOI!!"
+                doi_list.append(doi_list_tmp)
 
             # abstract_list
             a_path = '//*[@id="enc-abstract"]/p'
             abstract_link = browser.find_element_by_xpath(a_path)
             abstract_list_tmp = abstract_link.text
             abstract_list.append(abstract_list_tmp)
+
+            # load a spaCy model and set the environment
+            nlp = spacy.load("en_core_web_sm")
+            # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            # logger = logging.getLogger("PyTR")
+            tr = pytextrank.TextRank(logger=None)
+            nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
+            doc = nlp(abstract_list_tmp)
+            # temporary abstract_summary_list
+            abstract_summary_list_tmp = [];
+            for ab_summary in doc._.textrank.summary(limit_phrases=1, limit_sentences=2):
+                abstract_summary_list_tmp.append(ab_summary)
+            abstract_summary_list.append(str(abstract_summary_list_tmp))
+            # temporary abstract_summary_list
+            abstract_keyword_list_tmp = [];
+            for phrase in doc._.phrases[:5]: ## top 5 keywords
+                abstract_keyword_list_tmp.append(phrase)
+            abstract_keyword_list.append(str(abstract_keyword_list_tmp))
 
             # figure_list
             j = 1
@@ -162,12 +214,16 @@ class pmExt:
 
                 j += 1
             # go to next article
-            next_article = browser.find_element_by_xpath('//*[@id="adjacent-navigation"]/div[3]/a/span[2]')
-            browser.execute_script("arguments[0].click();", next_article)
-            time.sleep(0.5)
-            i += 1
+            try:
+                next_article = browser.find_element_by_xpath('//*[@id="adjacent-navigation"]/div[3]/a/span[2]')
+                browser.execute_script("arguments[0].click();", next_article)
+                time.sleep(0.5)
+                i += 1
+            except:
+                print("### End of the searching pages ###")
+                i += 1
 
-        return title_list, citation_list, doi_list, abstract_list, figure_list
+        return title_list, citation_list, doi_list, abstract_list, abstract_summary_list, abstract_keyword_list, figure_list
 
     def create_dir(self, root_dir, name):
         try:
@@ -194,7 +250,8 @@ class pmExt:
 parser = argparse.ArgumentParser(description='## Search and Extract Papers using PubMed Engine ##', formatter_class=argparse.RawDescriptionHelpFormatter,
                                  epilog='''\
 version history:
-    [ver0.10]       release of this script (2020.08.01)
+    [ver 0.20]       added an abstract summary as an output using TextRank algorithm
+    [ver 0.10]       release of this script (2020.08.01)
 
 ++ Copyright at uschoi@nict.go.jp / qtwing@naver.com ++
 ''')
@@ -216,7 +273,7 @@ root_dir = "PubMed_Reports/"
 
 # MAIN RUN
 response = pmExt
-title_list, citation_list, doi_list, abstract_list, figure_list = response().ext_article(keyword, int(itemN))
+title_list, citation_list, doi_list, abstract_list, abstract_summary_list, abstract_keyword_list, figure_list = response().ext_article(keyword, int(itemN))
 
 # set path
 path = root_dir + keyword
@@ -226,24 +283,38 @@ print("")
 print(" +++++++++++++++++++++++++++++++++++++ NOW Processing IS STARTING +++++++++++++++++++++++++++++++++++++ ")
 print("")
 print(" [ Now downloading article information !! ] ")
-print(" ")
 with open(os.path.join('./' + root_dir + '/', keyword + '.txt'), 'w', encoding="utf-8") as f:
     pbar = enumerate(tqdm(title_list))
     for item_ind, item in pbar:
         f.write("%s\n" % "      ")
-        f.write("[Article" + "-" + '%04d' %(item_ind + 1) + "]: " + "%s\n" % textwrap.fill(item, width=150))
+        f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
         f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
         f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
         f.write("%s\n" % textwrap.fill(abstract_list[item_ind], width=150))
         f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         f.write("%s\n" % "      ")
         time.sleep(0.01)
+print(" ")
 
-# print(figure_list)
-# save figure
+print(" [ Now downloading abstract summary !! ] ")
+with open(os.path.join('./' + root_dir + '/', keyword + '_abstract_summary' + '.txt'), 'w', encoding="utf-8") as f:
+    pbar = enumerate(tqdm(title_list))
+    for item_ind, item in pbar:
+        f.write("%s\n" % "      ")
+        f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
+        f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
+        f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
+        f.write("%s\n" % "      ")
+        f.write("%s\n" % textwrap.fill(abstract_summary_list[item_ind], width=150))
+        f.write("%s\n" % "      ")
+        f.write('# Keywords  ' + "%s\n" % textwrap.fill(abstract_keyword_list[item_ind]))
+        f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        f.write("%s\n" % "      ")
+        time.sleep(0.01)
+
+# save figures
 print(" ")
 print(" [ Now downloading article figures !! ] ")
-print(" ")
 pbar2 = enumerate(tqdm(figure_list))
 indN = len(title_list) + 1
 
