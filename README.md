@@ -7,6 +7,7 @@
 + Searching articles using Pubmed Engine
 + The script is very simple to use
 + Outputs are "_Summary of Articles_" and "_Article Figures_"
++ " _Automatic summary of abstract using [PyTextRank](https://pypi.org/project/pytextrank/)_ " added in version 0.2
 + The script supports <b>_python3_</b> and <b>_Chrome_</b>
 + _Progressbar_ is supporting in this version
 
@@ -18,6 +19,9 @@
 ### &nbsp;&nbsp;&nbsp;_Modules_
 &nbsp;&nbsp;&nbsp;&nbsp;
 ```pip setup.py install```
+
+### &nbsp;&nbsp;&nbsp;[_PyTextRank_](https://pypi.org/project/pytextrank/)
+&nbsp;&nbsp;&nbsp;&nbsp;```python -m spacy download en_core_web_sm```
 
 ### &nbsp;&nbsp;&nbsp;_Before using this script_
 ##### &nbsp;&nbsp;&nbsp;You should input your own _'ChromeDriver'_ path in the following line of pmExt.py
@@ -55,13 +59,17 @@ python pmExt.py --help
 ```
 (1) Title (2) Citation number (3) DOI (4) Abstract
 ```
-![](assets/README-c82bc7db.png)
+![](assets/README-516f4350.png)
+
+* <font size=4>_Abstract Summary_ (.txt)_</font>
+![](assets/README-890c343f.png)
 
 * <font size=4>_Article figures_</font>
-![](assets/README-74ca29ee.png)
+![](assets/README-24696418.png)
 
 ## Version history
-+ Version 0.1: the script release (2020.08.01)
++ Version 0.2: Added automatic summary of abstracts (2020.08.03)
++ Version 0.1: The script release (2020.08.01)
 
 ## _Contact for Feedback and Bug Reports_
 _Uksu, Choi (qtwing@naver.com)_
