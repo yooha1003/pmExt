@@ -22,7 +22,19 @@ import textwrap
 import logging
 import pytextrank
 import spacy
-##
+# modules for pdf generation
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph
+from reportlab.platypus import SimpleDocTemplate
+#
+
 
 class pmExt:
     def __init__(self):
@@ -284,34 +296,173 @@ print("")
 print(" +++++++++++++++++++++++++++++++++++++ NOW Processing IS STARTING +++++++++++++++++++++++++++++++++++++ ")
 print("")
 print(" [ Now downloading article information !! ] ")
-with open(os.path.join('./' + root_dir + '/', keyword + '.txt'), 'w', encoding="utf-8") as f:
-    pbar = enumerate(tqdm(title_list))
-    for item_ind, item in pbar:
-        f.write("%s\n" % "      ")
-        f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
-        f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
-        f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
-        f.write("%s\n" % textwrap.fill(abstract_list[item_ind], width=150))
-        f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        f.write("%s\n" % "      ")
-        time.sleep(0.01)
+# with open(os.path.join('./' + root_dir + '/', keyword + '.txt'), 'w', encoding="utf-8") as f:
+#     pbar = enumerate(tqdm(title_list))
+#     for item_ind, item in pbar:
+#         f.write("%s\n" % "      ")
+#         f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
+#         f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
+#         f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
+#         f.write("%s\n" % textwrap.fill(abstract_list[item_ind], width=150))
+#         f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+#         f.write("%s\n" % "      ")
+#         time.sleep(0.01)
+
+# set the template for pdf output
+report = SimpleDocTemplate(os.path.join('./' + root_dir + '/' + "pmExt_ArticleReport-" + keyword + '.pdf'), pagesize=A4)
+report_style = getSampleStyleSheet()
+# report_style.list()
+report_style.add(ParagraphStyle(name='Paragraph', spaceAfter=10))
+report_style.add(ParagraphStyle(name='content_title',
+                          fontFamily='Helvetica',
+                          fontSize=12,
+                          leading=15,
+                          textColor=colors.HexColor("#2E2D30")))
+report_style.add(ParagraphStyle(name='content_citation',
+                          fontFamily='Helvetica',
+                          fontSize=10,
+                          textColor=colors.HexColor("#D65720")))
+report_style.add(ParagraphStyle(name='content_doi',
+                          fontFamily='Times-Roman',
+                          fontSize=11,
+                          leading=15,
+                          textColor=colors.HexColor("#285DC9")))
+report_style.add(ParagraphStyle(name='content_line',
+                          fontFamily='Times-Roman',
+                          fontSize=11,
+                          leading=15,
+                          textColor=colors.HexColor("#050000")))
+report_style.add(ParagraphStyle(name='content_summary',
+                          fontFamily='Times-Roman',
+                          fontSize=11,
+                          leading=15,
+                          textColor=colors.HexColor("#1A6304")))
+report_style.add(ParagraphStyle(name='content_keyword',
+                          fontFamily='Times-Roman',
+                          fontSize=11,
+                          leading=15,
+                          textColor=colors.HexColor("#A10613")))
+# title
+report_title = Paragraph("pmExt Reports <ver 0.22>", report_style['Heading1'])
+
+# main run
+pbar = enumerate(tqdm(title_list))
+contents = []
+contents.append(report_title)
+
+# run loop
+for item_ind, item in pbar:
+    # article number
+    paragraph_1 = Paragraph(
+        ("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]"),
+        report_style['Heading2']
+    )
+    # title
+    paragraph_2= Paragraph(
+        item,
+        report_style['content_title']
+    )
+    # citation number
+    paragraph_3 = Paragraph(
+        ("Citation:  " + "%s\n" % citation_list[item_ind]),
+        report_style['content_citation']
+    )
+    # doi link
+    paragraph_4 = Paragraph(
+        ("DOI:  " + "%s\n" % doi_list[item_ind]),
+        report_style['content_doi']
+    )
+    # abstract
+    paragraph_5 = Paragraph(
+        abstract_list[item_ind],
+        report_style['BodyText']
+    )
+    contents.append(paragraph_1)
+    contents.append(paragraph_2)
+    contents.append(paragraph_3)
+    contents.append(paragraph_4)
+    contents.append(paragraph_5)
+report.build(contents)
 print(" ")
 
 print(" [ Now downloading abstract summary !! ] ")
-with open(os.path.join('./' + root_dir + '/', keyword + '_abstract_summary' + '.txt'), 'w', encoding="utf-8") as f:
-    pbar = enumerate(tqdm(title_list))
-    for item_ind, item in pbar:
-        f.write("%s\n" % "      ")
-        f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
-        f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
-        f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
-        f.write("%s\n" % "      ")
-        f.write("%s\n" % textwrap.fill(abstract_summary_list[item_ind], width=150))
-        f.write("%s\n" % "      ")
-        f.write('# Keywords  ' + "%s\n" % textwrap.fill(abstract_keyword_list[item_ind]))
-        f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        f.write("%s\n" % "      ")
-        time.sleep(0.01)
+# with open(os.path.join('./' + root_dir + '/', keyword + '_abstract_summary' + '.txt'), 'w', encoding="utf-8") as f:
+#     pbar = enumerate(tqdm(title_list))
+#     for item_ind, item in pbar:
+#         f.write("%s\n" % "      ")
+#         f.write("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]: " + "%s\n" % item)
+#         f.write("Citation" + ": " + "%s\n" % textwrap.fill(citation_list[item_ind], width=150))
+#         f.write("doi" + ": " + "%s\n" % textwrap.fill(doi_list[item_ind], width=150))
+#         f.write("%s\n" % "      ")
+#         f.write("%s\n" % textwrap.fill(abstract_summary_list[item_ind], width=150))
+#         f.write("%s\n" % "      ")
+#         f.write('# Keywords  ' + "%s\n" % textwrap.fill(abstract_keyword_list[item_ind]))
+#         f.write("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+#         f.write("%s\n" % "      ")
+#         time.sleep(0.01)
+#
+# set the template for pdf output
+summary = SimpleDocTemplate(os.path.join('./' + root_dir + '/' + "pmExt_AbstractSummary-" + keyword + '.pdf'), pagesize=A4)
+# title
+summary_title = Paragraph("pmExt Reports (Abstract Summary)", report_style['Heading1'])
+
+# main run
+pbar = enumerate(tqdm(title_list))
+contents_sum = []
+contents_sum.append(summary_title)
+
+# run loop
+for item_ind, item in pbar:
+    # article number
+    paragraph_1 = Paragraph(
+        ("[ Article" + "-" + '%04d' %(item_ind + 1) + " ]"),
+        report_style['Heading2']
+    )
+    # title
+    paragraph_2= Paragraph(
+        item,
+        report_style['content_title']
+    )
+    # citation number
+    paragraph_3 = Paragraph(
+        ("Citation:  " + "%s\n" % citation_list[item_ind]),
+        report_style['content_citation']
+    )
+    # doi link
+    paragraph_4 = Paragraph(
+        ("DOI:  " + "%s\n" % doi_list[item_ind]),
+        report_style['content_doi']
+    )
+    # abstract summary
+    paragraph_5 = Paragraph(
+        "+++++++++++++++++++++++++++ Auto-Summary ++++++++++++++++++++++++++++",
+        report_style['content_line']
+    )
+    # abstract summary
+    paragraph_6 = Paragraph(
+        abstract_summary_list[item_ind],
+        report_style['content_summary']
+    )
+    # abstract summary
+    paragraph_7 = Paragraph(
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+        report_style['content_line']
+    )
+    # abstract keywords
+    paragraph_8 = Paragraph(
+        abstract_keyword_list[item_ind],
+        report_style['content_keyword']
+    )
+    contents_sum.append(paragraph_1)
+    contents_sum.append(paragraph_2)
+    contents_sum.append(paragraph_3)
+    contents_sum.append(paragraph_4)
+    contents_sum.append(paragraph_5)
+    contents_sum.append(paragraph_6)
+    contents_sum.append(paragraph_7)
+    contents_sum.append(paragraph_8)
+summary.build(contents_sum)
+
 
 # save figures
 print(" ")
