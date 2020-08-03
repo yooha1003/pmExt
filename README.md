@@ -10,6 +10,7 @@
 + " _Automatic summary of abstract using [PyTextRank](https://pypi.org/project/pytextrank/)_ " added in version 0.2
 + The script supports <b>_python3_</b> and <b>_Chrome_</b>
 + _Progressbar_ is supporting in this version
+![](assets/README-3b3d0f79.png)
 
 ## Install requirements
 ### &nbsp;&nbsp;&nbsp;_ChromeDriver_
@@ -40,7 +41,7 @@
 python pmExt.py
 ```
 + <b> Just type _keywords_ and _number of articles_</b>
-![](assets/README-dabdaa9a.png)
+![](assets/README-022c8f14.png)
 
 + <b>Tips</b>
 ```
@@ -59,17 +60,19 @@ python pmExt.py --help
 ```
 (1) Title (2) Citation number (3) DOI (4) Abstract
 ```
-![](assets/README-516f4350.png)
+![](assets/README-ecc77244.png)
 
 * <font size=4>_Abstract Summary (.txt)_</font>
-![](assets/README-890c343f.png)
+![](assets/README-c31fdb1f.png)
 
 * <font size=4>_Article figures_</font>
-![](assets/README-24696418.png)
+![](assets/README-06318f08.png)
 
 ## Version history
-+ Version 0.2: Added automatic summary of abstracts (2020.08.03)
-+ Version 0.1: The script release (2020.08.01)
++ Version 0.22: new version of output files (2020.08.04)
++ Version 0.21: bug fixed for duplicated articles over limits (2020.08.03)
++ Version 0.2 : Added automatic summary of abstracts (2020.08.03)
++ Version 0.1 : The script release (2020.08.01)
 
 ## _Contact for Feedback and Bug Reports_
 _Uksu, Choi (qtwing@naver.com)_
