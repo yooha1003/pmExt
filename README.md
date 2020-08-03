@@ -18,7 +18,7 @@
 
 ### &nbsp;&nbsp;&nbsp;_Modules_
 &nbsp;&nbsp;&nbsp;&nbsp;
-```pip setup.py install```
+```python setup.py install```
 
 ### &nbsp;&nbsp;&nbsp;[_PyTextRank_](https://pypi.org/project/pytextrank/)
 &nbsp;&nbsp;&nbsp;&nbsp;```python -m spacy download en_core_web_sm```
