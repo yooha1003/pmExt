@@ -221,8 +221,8 @@ class pmExt:
                 i += 1
             except:
                 print("### End of the searching pages ###")
-                i += 1
-
+                break
+        browser.quit()
         return title_list, citation_list, doi_list, abstract_list, abstract_summary_list, abstract_keyword_list, figure_list
 
     def create_dir(self, root_dir, name):
@@ -250,6 +250,7 @@ class pmExt:
 parser = argparse.ArgumentParser(description='## Search and Extract Papers using PubMed Engine ##', formatter_class=argparse.RawDescriptionHelpFormatter,
                                  epilog='''\
 version history:
+    [Ver 0.21]       bug fixed for duplicated articles over limit
     [ver 0.20]       added an abstract summary as an output using TextRank algorithm
     [ver 0.10]       release of this script (2020.08.01)
 
