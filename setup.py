@@ -8,5 +8,5 @@ setup(
     author_email='qtwing@naver.com',
     description='Pubmed Article Search and Download python script',
     packages=find_packages(),
-    install_requires=['selenium', 'argparse', 'tqdm', 'requests', 'urllib3', 'pillow'],
+    install_requires=['selenium', 'argparse', 'tqdm', 'requests', 'urllib3', 'pillow', 'pytextrank', 'reportlab'],
 )
